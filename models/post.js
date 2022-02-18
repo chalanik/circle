@@ -11,8 +11,8 @@ const postSchema = new Schema({
   description: String,
   title: String,
   user: { type: Schema.Types.ObjectId, ref: "User" },
-  comments: [commentSchema],
-  circle: { type: Schema.Types.ObjectId, ref: "User" },
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+  circle: { type: Schema.Types.ObjectId, ref: "Circle" },
   createdAt: { type: Date, default: Date.now },
 });
 

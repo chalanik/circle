@@ -53,7 +53,7 @@ circleRoutes.route("/api/v1/user/:id").post(function (req, response) {
       response.json("");
     })
     .catch((err) => {
-      response.sendStatus(500);
+      response.sendStatus(503);
     });
 });
 
@@ -80,23 +80,27 @@ circleRoutes.route("/api/v1/circle/:id/post/").post(function (req, response) {
       $addToSet: { posts: post._id },
     })
       .then((res) => response.json(res))
-      .catch((err) => response.sendStatus(500));
+      .catch((err) => response.sendStatus(503));
   });
 });
 
 // add a comment
 circleRoutes.route("/api/v1/post/:id/comment").post(function (req, response) {
   const comment = new Comment(req.body);
-  Post.findByIdAndUpdate(req.params.id, {
-    $addToSet: { comments: comment },
-  })
-    .then((res) => {
-      response.json(res);
+  comment.save((err) => {
+    if (err) return next(err);
+
+    Post.findByIdAndUpdate(req.params.id, {
+      $addToSet: { comments: comment._id },
     })
-    .catch((err) => {
-      console.error(err);
-      response.sendStatus(500);
-    });
+      .then((res) => {
+        response.json(res);
+      })
+      .catch((err) => {
+        console.error(err);
+        response.sendStatus(503);
+      });
+  });
 });
 
 //get user details
@@ -127,6 +131,27 @@ circleRoutes.route("/api/v1/circle/:id").get(function (req, response) {
     });
 });
 
+//get post details
+circleRoutes.route("/api/v1/post/:id").get(function (req, response) {
+  Post.findById(req.params.id)
+    .populate({
+      path: "comments",
+      populate: { path: "user", select: "name" },
+    })
+    .populate({
+      path: "user",
+      select: "name",
+    })
+    .populate({
+      path: "circle",
+      select: "name",
+    })
+    .exec(function (err, user) {
+      if (err) return handleError(err);
+      response.json(user);
+    });
+});
+
 //get all circles
 circleRoutes.route("/api/v1/circles").get(function (req, response) {
   Circle.find({}).exec(function (err, user) {
@@ -134,6 +159,5 @@ circleRoutes.route("/api/v1/circles").get(function (req, response) {
     response.json(user);
   });
 });
-
 
 module.exports = circleRoutes;
