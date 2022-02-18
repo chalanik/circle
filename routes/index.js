@@ -120,10 +120,10 @@ circleRoutes.route("/api/v1/user/:id").get(function (req, response) {
 circleRoutes.route("/api/v1/circle/:id").get(function (req, response) {
   Circle.findById(req.params.id)
     .populate({
-      path: "users",
+      path: "users", field: "name"
     })
     .populate({
-      path: "posts",
+      path: "posts"
     })
     .exec(function (err, user) {
       if (err) return handleError(err);
