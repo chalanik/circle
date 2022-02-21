@@ -105,7 +105,11 @@ circleRoutes.route("/api/v1/post/:id/comment").post(function (req, response) {
 
 //get user details
 circleRoutes.route("/api/v1/user/:id").get(function (req, response) {
-  User.findById(req.params.id)
+  const filter =
+    req.params.id.length == 24
+      ? { _id: ObjectId(req.params.id) }
+      : { msid: req.params.id };
+  User.findOne(filter)
     .populate({
       path: "circles",
       populate: { path: "posts" },
@@ -120,10 +124,11 @@ circleRoutes.route("/api/v1/user/:id").get(function (req, response) {
 circleRoutes.route("/api/v1/circle/:id").get(function (req, response) {
   Circle.findById(req.params.id)
     .populate({
-      path: "users", select: "name"
+      path: "users",
+      select: "name",
     })
     .populate({
-      path: "posts"
+      path: "posts",
     })
     .exec(function (err, user) {
       if (err) return handleError(err);
