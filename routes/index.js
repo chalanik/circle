@@ -183,7 +183,7 @@ circleRoutes.route("/api/v1/post/:id").get(function (req, response) {
 
 //get all circles
 circleRoutes.route("/api/v1/circles").get(function (req, response) {
-  Circle.find({}).exec(function (err, user) {
+  Circle.find({}).select("name").exec(function (err, user) {
     if (err) return handleError(err);
     response.json(user);
   });
