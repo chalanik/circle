@@ -7,6 +7,7 @@ const userSchema = new Schema({
   zip: Number,
   msid: { type: String, unique: true },
   circles: [{ type: Schema.Types.ObjectId, ref: "Circle" }],
+  posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
 });
 
 module.exports = mongoose.model("User", userSchema);

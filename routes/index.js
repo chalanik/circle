@@ -109,15 +109,39 @@ circleRoutes.route("/api/v1/user/:id").get(function (req, response) {
     req.params.id.length == 24
       ? { _id: ObjectId(req.params.id) }
       : { msid: req.params.id };
+
   User.findOne(filter)
     .populate({
       path: "circles",
-      populate: { path: "posts" },
     })
     .exec(function (err, user) {
-      if (err) return handleError(err);
-      response.json(user);
+      if (err) return err;
+      Post.find({
+        _id: {
+          $in: user.circles
+            .map((c) => c.posts.map((p) => p._id.toString()))
+            .flat(),
+        },
+      })
+        .populate([
+          { path: "user", select: "name" },
+         
+          { path: "circle", select: "name" },
+        ])
+        .exec((err, posts) => {
+          user.posts = posts
+          if (err) return err;
+          response.json(user);
+        });
     });
+  // User.findOne(filter)
+  //   .populate({
+  //     path: "circles",
+  //   })
+  //   .exec(function (err, user) {
+  //     if (err) return handleError(err);
+  //     response.json(user);
+  //   });
 });
 
 //get circle details

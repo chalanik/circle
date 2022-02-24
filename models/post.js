@@ -14,6 +14,7 @@ const postSchema = new Schema({
   comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   circle: { type: Schema.Types.ObjectId, ref: "Circle" },
   createdAt: { type: Date, default: Date.now },
+  anonymous: { type: Boolean, default: false },
 });
 
 module.exports = {
