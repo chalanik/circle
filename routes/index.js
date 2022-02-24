@@ -74,12 +74,13 @@ circleRoutes.route("/api/v1/circle/:id/post/").post(function (req, response) {
   post.circle = ObjectId(req.params.id);
   post.save(function (err) {
     if (err) {
-      return next(err);
+      console.error(err)
+      return;
     }
     Circle.findByIdAndUpdate(post.circle, {
       $addToSet: { posts: post._id },
     })
-      .then((res) => response.json(res))
+      .then(() => response.json(post))
       .catch((err) => response.sendStatus(503));
   });
 });
@@ -90,9 +91,13 @@ circleRoutes.route("/api/v1/post/:id/comment").post(function (req, response) {
   comment.save((err) => {
     if (err) return next(err);
 
-    Post.findByIdAndUpdate(req.params.id, {
-      $addToSet: { comments: comment._id },
-    })
+    Post.findByIdAndUpdate(
+      req.params.id,
+      {
+        $addToSet: { comments: comment._id },
+      },
+      { new: true }
+    )
       .then((res) => {
         response.json(res);
       })
