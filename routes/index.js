@@ -99,7 +99,7 @@ circleRoutes.route("/api/v1/post/:id/comment").post(function (req, response) {
       { new: true }
     )
       .then((res) => {
-        response.json(res);
+        response.json(comment);
       })
       .catch((err) => {
         console.error(err);
