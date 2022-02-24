@@ -124,12 +124,12 @@ circleRoutes.route("/api/v1/user/:id").get(function (req, response) {
         },
       })
         .populate([
+          { path: "comments", populate: { path: "user", select: "name" } },
           { path: "user", select: "name" },
-         
           { path: "circle", select: "name" },
         ])
         .exec((err, posts) => {
-          user.posts = posts
+          user.posts = posts;
           if (err) return err;
           response.json(user);
         });
@@ -183,10 +183,12 @@ circleRoutes.route("/api/v1/post/:id").get(function (req, response) {
 
 //get all circles
 circleRoutes.route("/api/v1/circles").get(function (req, response) {
-  Circle.find({}).select("name").exec(function (err, user) {
-    if (err) return handleError(err);
-    response.json(user);
-  });
+  Circle.find({})
+    .select("name")
+    .exec(function (err, user) {
+      if (err) return handleError(err);
+      response.json(user);
+    });
 });
 
 module.exports = circleRoutes;
