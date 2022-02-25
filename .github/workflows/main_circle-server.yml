@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'circle-server'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6D91C40008204F4CAA27D4416BA091F4 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_87E360F35C504AF79812633D56774641 }}
           package: .
