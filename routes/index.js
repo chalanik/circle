@@ -16,7 +16,8 @@ circleRoutes.route("/api/v1/user/").post(function (req, response) {
   const user = new User(req.body);
   user.save(function (err) {
     if (err) {
-      return next(err);
+      console.error(err);
+      response.sendStatus(500);
     }
     response.json("");
   });
@@ -74,12 +75,10 @@ circleRoutes.route("/api/v1/circle/:id/post/").post(function (req, response) {
   post.circle = ObjectId(req.params.id);
   post.save(function (err) {
     if (err) {
-      {
-        console.error(err);
-        response.sendStatus(500);
-      }
+      console.error(err);
       response.sendStatus(500);
     }
+
     Circle.findByIdAndUpdate(post.circle, {
       $addToSet: { posts: post._id },
     })
