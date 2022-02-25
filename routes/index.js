@@ -62,7 +62,7 @@ circleRoutes.route("/api/v1/circle/").post(function (req, response) {
   const circle = new Circle(req.body);
   circle.save(function (err) {
     if (err) {
-      return next(err);
+      console.error(err)
     }
     response.json("");
   });

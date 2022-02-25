@@ -5,6 +5,7 @@ const commentSchema = new Schema({
   content: String,
   createdAt: { type: Date, default: Date.now },
   user: { type: Schema.Types.ObjectId, ref: "User" },
+  score: Number,
 });
 
 const postSchema = new Schema({
@@ -15,6 +16,7 @@ const postSchema = new Schema({
   circle: { type: Schema.Types.ObjectId, ref: "Circle" },
   createdAt: { type: Date, default: Date.now },
   anonymous: { type: Boolean, default: false },
+  score: Number,
 });
 
 module.exports = {
