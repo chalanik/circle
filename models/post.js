@@ -6,6 +6,7 @@ const commentSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
   user: { type: Schema.Types.ObjectId, ref: "User" },
   score: Number,
+  anonymous: { type: Boolean, default: false },
 });
 
 const postSchema = new Schema({

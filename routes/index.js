@@ -62,7 +62,7 @@ circleRoutes.route("/api/v1/circle/").post(function (req, response) {
   const circle = new Circle(req.body);
   circle.save(function (err) {
     if (err) {
-      console.error(err)
+      console.error(err);
     }
     response.json("");
   });
@@ -74,8 +74,8 @@ circleRoutes.route("/api/v1/circle/:id/post/").post(function (req, response) {
   post.circle = ObjectId(req.params.id);
   post.save(function (err) {
     if (err) {
-      console.error(err)
-      return;
+      return err;
+      response.sendStatus(500);
     }
     Circle.findByIdAndUpdate(post.circle, {
       $addToSet: { posts: post._id },
@@ -89,7 +89,10 @@ circleRoutes.route("/api/v1/circle/:id/post/").post(function (req, response) {
 circleRoutes.route("/api/v1/post/:id/comment").post(function (req, response) {
   const comment = new Comment(req.body);
   comment.save((err) => {
-    if (err) return next(err);
+    if (err) {
+      console.error(err);
+      response.status(500);
+    }
 
     Post.findByIdAndUpdate(
       req.params.id,
@@ -149,6 +152,30 @@ circleRoutes.route("/api/v1/user/:id").get(function (req, response) {
   //   });
 });
 
+//get all posts
+circleRoutes.route("/api/v1/posts").get(function (req, response) {
+  Post.find({})
+    .populate({
+      path: "comments",
+      populate: { path: "user", select: "name" },
+    })
+    .populate({
+      path: "user",
+      select: "name",
+    })
+    .populate({
+      path: "circle",
+      select: "name",
+    })
+    .exec(function (err, user) {
+      if (err) {
+        return err;
+        response.sendStatus(500);
+      }
+      response.json(user);
+    });
+});
+
 //get circle details
 circleRoutes.route("/api/v1/circle/:id").get(function (req, response) {
   Circle.findById(req.params.id)
@@ -160,7 +187,10 @@ circleRoutes.route("/api/v1/circle/:id").get(function (req, response) {
       path: "posts",
     })
     .exec(function (err, user) {
-      if (err) return handleError(err);
+      if (err) {
+        return err;
+        response.sendStatus(500);
+      }
       response.json(user);
     });
 });
@@ -181,7 +211,10 @@ circleRoutes.route("/api/v1/post/:id").get(function (req, response) {
       select: "name",
     })
     .exec(function (err, user) {
-      if (err) return handleError(err);
+      if (err) {
+        return err;
+        response.sendStatus(500);
+      }
       response.json(user);
     });
 });
@@ -191,7 +224,23 @@ circleRoutes.route("/api/v1/circles").get(function (req, response) {
   Circle.find({})
     .select("name")
     .exec(function (err, user) {
-      if (err) return handleError(err);
+      if (err) {
+        return err;
+        response.sendStatus(500);
+      }
+      response.json(user);
+    });
+});
+
+//get all users
+circleRoutes.route("/api/v1/users").get(function (req, response) {
+  User.find({})
+    .select("name msid")
+    .exec(function (err, user) {
+      if (err) {
+        return err;
+        response.sendStatus(500);
+      }
       response.json(user);
     });
 });
