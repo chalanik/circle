@@ -74,7 +74,10 @@ circleRoutes.route("/api/v1/circle/:id/post/").post(function (req, response) {
   post.circle = ObjectId(req.params.id);
   post.save(function (err) {
     if (err) {
-      return err;
+      {
+        console.error(err);
+        response.sendStatus(500);
+      }
       response.sendStatus(500);
     }
     Circle.findByIdAndUpdate(post.circle, {
@@ -123,7 +126,10 @@ circleRoutes.route("/api/v1/user/:id").get(function (req, response) {
       path: "circles",
     })
     .exec(function (err, user) {
-      if (err) return err;
+      if (err) {
+        console.error(err);
+        response.sendStatus(500);
+      }
       Post.find({
         _id: {
           $in: user.circles
@@ -138,7 +144,10 @@ circleRoutes.route("/api/v1/user/:id").get(function (req, response) {
         ])
         .exec((err, posts) => {
           user.posts = posts;
-          if (err) return err;
+          if (err) {
+            console.error(err);
+            response.sendStatus(500);
+          }
           response.json(user);
         });
     });
@@ -169,7 +178,7 @@ circleRoutes.route("/api/v1/posts").get(function (req, response) {
     })
     .exec(function (err, user) {
       if (err) {
-        return err;
+        console.error(err);
         response.sendStatus(500);
       }
       response.json(user);
@@ -185,10 +194,11 @@ circleRoutes.route("/api/v1/circle/:id").get(function (req, response) {
     })
     .populate({
       path: "posts",
+      populate: { path: "user", select: "name" },
     })
     .exec(function (err, user) {
       if (err) {
-        return err;
+        console.error(err);
         response.sendStatus(500);
       }
       response.json(user);
@@ -212,7 +222,7 @@ circleRoutes.route("/api/v1/post/:id").get(function (req, response) {
     })
     .exec(function (err, user) {
       if (err) {
-        return err;
+        console.error(err);
         response.sendStatus(500);
       }
       response.json(user);
@@ -225,7 +235,7 @@ circleRoutes.route("/api/v1/circles").get(function (req, response) {
     .select("name")
     .exec(function (err, user) {
       if (err) {
-        return err;
+        console.error(err);
         response.sendStatus(500);
       }
       response.json(user);
@@ -238,7 +248,7 @@ circleRoutes.route("/api/v1/users").get(function (req, response) {
     .select("name msid")
     .exec(function (err, user) {
       if (err) {
-        return err;
+        console.error(err);
         response.sendStatus(500);
       }
       response.json(user);
