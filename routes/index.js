@@ -138,7 +138,6 @@ circleRoutes.route("/api/v1/user/:id").get(function (req, response) {
         },
       })
         .populate([
-          { path: "comments", populate: { path: "user", select: "name" } },
           { path: "user", select: "name" },
           { path: "circle", select: "name" },
         ])
